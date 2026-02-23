@@ -69,7 +69,7 @@ JUZ_FIRST_VERSE = {
 
 def get_today_juz() -> int | None:
     """Determine which juz to cover today. Returns None if all 30 are done."""
-    start_date = datetime(2026, 2, 18, tzinfo=UK_TZ)  # 1st Ramadan 2026
+    start_date = datetime(2026, 2, 17, tzinfo=UK_TZ)  # Offset so Feb 23 = Juz 7
     today = datetime.now(UK_TZ).replace(hour=0, minute=0, second=0, microsecond=0)
     day_number = (today - start_date).days
     juz = day_number + 1  # Day 0 = Juz 1, Day 29 = Juz 30
