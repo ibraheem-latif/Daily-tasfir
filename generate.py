@@ -14,6 +14,7 @@ import os
 import sys
 import json
 import re
+import time
 import html as html_mod
 from datetime import datetime, timezone
 from pathlib import Path
@@ -326,6 +327,22 @@ def chunk_text(plain_text: str, max_chars: int = 120_000) -> list[str]:
     return chunks
 
 
+def _call_claude(client, **kwargs) -> str:
+    """Call Claude with retry on overloaded errors (529)."""
+    for attempt in range(5):
+        try:
+            message = client.messages.create(**kwargs)
+            return message.content[0].text
+        except Exception as e:
+            if "overloaded" in str(e).lower() or "529" in str(e):
+                wait = 2 ** attempt * 5  # 5, 10, 20, 40, 80 seconds
+                print(f"  API overloaded, retrying in {wait}s (attempt {attempt + 1}/5)...")
+                time.sleep(wait)
+            else:
+                raise
+    raise RuntimeError("Anthropic API overloaded after 5 retries")
+
+
 def summarise(plain_text: str, juz_number: int) -> str:
     """Chunk the tafsir, summarise each chunk, then merge into a final summary."""
     import anthropic
@@ -340,7 +357,8 @@ def summarise(plain_text: str, juz_number: int) -> str:
     chunk_summaries = []
     for i, chunk in enumerate(chunks, 1):
         print(f"  Summarising chunk {i}/{len(chunks)}...")
-        message = client.messages.create(
+        result = _call_claude(
+            client,
             model="claude-haiku-4-5-20251001",
             max_tokens=1024,
             messages=[{"role": "user", "content": f"""Summarise this section of Tafsir Ibn Kathir from Juz {juz_number}.
@@ -349,7 +367,7 @@ Write 200-300 words.
 
 {chunk}"""}],
         )
-        chunk_summaries.append(message.content[0].text)
+        chunk_summaries.append(result)
 
     # Phase 2: merge into final summary
     print("  Merging chunk summaries into final summary...")
@@ -357,7 +375,8 @@ Write 200-300 words.
         f"Section {i}:\n{s}" for i, s in enumerate(chunk_summaries, 1)
     )
 
-    message = client.messages.create(
+    return _call_claude(
+        client,
         model="claude-haiku-4-5-20251001",
         max_tokens=1500,
         messages=[{"role": "user", "content": f"""You are writing the final summary for Juz {juz_number} of the Quran's Tafsir Ibn Kathir, for a Muslim audience.
@@ -376,12 +395,12 @@ Section summaries:
 
 {merged_input}"""}],
     )
-    return message.content[0].text
 
 
 def _summarise_single(client, plain_text: str, juz_number: int) -> str:
     """Summarise when the full text fits in one call."""
-    message = client.messages.create(
+    return _call_claude(
+        client,
         model="claude-haiku-4-5-20251001",
         max_tokens=1024,
         messages=[{"role": "user", "content": f"""You are summarising Juz {juz_number} of the Quran's Tafsir Ibn Kathir for a Muslim audience.
@@ -399,7 +418,6 @@ Here is the full tafsir text:
 
 {plain_text}"""}],
     )
-    return message.content[0].text
 
 
 # ---------------------------------------------------------------------------
