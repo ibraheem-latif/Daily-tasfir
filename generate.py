@@ -328,19 +328,18 @@ def chunk_text(plain_text: str, max_chars: int = 120_000) -> list[str]:
 
 
 def _call_claude(client, **kwargs) -> str:
-    """Call Claude with retry on overloaded errors (529)."""
+    """Call Claude with retry on transient server errors (500, 529)."""
+    import anthropic
+    retryable = (anthropic.InternalServerError, anthropic._exceptions.OverloadedError)
     for attempt in range(5):
         try:
             message = client.messages.create(**kwargs)
             return message.content[0].text
-        except Exception as e:
-            if "overloaded" in str(e).lower() or "529" in str(e):
-                wait = 2 ** attempt * 5  # 5, 10, 20, 40, 80 seconds
-                print(f"  API overloaded, retrying in {wait}s (attempt {attempt + 1}/5)...")
-                time.sleep(wait)
-            else:
-                raise
-    raise RuntimeError("Anthropic API overloaded after 5 retries")
+        except retryable as e:
+            wait = 2 ** attempt * 5  # 5, 10, 20, 40, 80 seconds
+            print(f"  API error ({e.__class__.__name__}), retrying in {wait}s (attempt {attempt + 1}/5)...")
+            time.sleep(wait)
+    raise RuntimeError("Anthropic API failed after 5 retries")
 
 
 def summarise(plain_text: str, juz_number: int) -> str:
