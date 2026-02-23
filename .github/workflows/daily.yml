@@ -11,6 +11,11 @@ on:
         description: 'Override juz number (1-30). Leave empty for auto.'
         required: false
 
+# Only one run at a time — queued runs wait for the current one to finish
+concurrency:
+  group: daily-tafsir
+  cancel-in-progress: false
+
 permissions:
   contents: write
   pages: write
@@ -21,6 +26,12 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
+
+      - name: Restore manifest from gh-pages
+        run: |
+          mkdir -p site
+          git fetch origin gh-pages --depth=1 || true
+          git checkout origin/gh-pages -- manifest.json 2>/dev/null && mv manifest.json site/ || echo "No existing manifest"
 
       - name: Set up Python
         uses: actions/setup-python@v5
