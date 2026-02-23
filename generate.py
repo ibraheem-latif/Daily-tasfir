@@ -333,23 +333,46 @@ def chunk_text(plain_text: str, max_chars: int = 120_000) -> list[str]:
     return chunks
 
 
+def _call_claude_once(client, retryable, **kwargs):
+    """Single Claude call with retry on transient errors. Returns raw message."""
+    for attempt in range(8):
+        try:
+            return client.messages.create(**kwargs)
+        except retryable as e:
+            wait = min(2 ** attempt * 10, 120)
+            print(f"    {e.__class__.__name__}, retrying in {wait}s (attempt {attempt + 1}/8)...")
+            time.sleep(wait)
+    raise RuntimeError("Anthropic API failed after 8 retries")
+
+
 def _call_claude(client, **kwargs) -> str:
-    """Call Claude with retry on transient server errors (500, 529)."""
+    """Call Claude with retry and automatic continuation if output is truncated."""
     import anthropic
     retryable = (
         anthropic.InternalServerError,
         anthropic._exceptions.OverloadedError,
         anthropic.RateLimitError,
     )
-    for attempt in range(8):
-        try:
-            message = client.messages.create(**kwargs)
-            return message.content[0].text
-        except retryable as e:
-            wait = min(2 ** attempt * 10, 120)  # 10, 20, 40, 80, 120, 120...
-            print(f"    {e.__class__.__name__}, retrying in {wait}s (attempt {attempt + 1}/8)...")
-            time.sleep(wait)
-    raise RuntimeError("Anthropic API failed after 8 retries")
+    kwargs.setdefault("max_tokens", 4096)
+
+    message = _call_claude_once(client, retryable, **kwargs)
+    full_text = message.content[0].text
+
+    # If truncated, continue generating up to 5 times
+    continuations = 0
+    while message.stop_reason == "max_tokens" and continuations < 5:
+        continuations += 1
+        print(f"    Output truncated, continuing ({continuations}/5)...")
+        # Send conversation so far and ask to continue
+        messages = list(kwargs["messages"]) + [
+            {"role": "assistant", "content": full_text},
+            {"role": "user", "content": "Continue from where you left off. Do not repeat what you already wrote."},
+        ]
+        cont_kwargs = {**kwargs, "messages": messages}
+        message = _call_claude_once(client, retryable, **cont_kwargs)
+        full_text += message.content[0].text
+
+    return full_text
 
 
 def summarise(plain_text: str, juz_number: int) -> str:
@@ -372,7 +395,6 @@ def summarise(plain_text: str, juz_number: int) -> str:
         result = _call_claude(
             client,
             model="claude-haiku-4-5-20251001",
-            max_tokens=2048,
             messages=[{"role": "user", "content": f"""Summarise this section of Tafsir Ibn Kathir from Juz {juz_number}.
 Cover the key themes, stories, rulings, and lessons. Be thorough — this will be merged with other section summaries.
 Write 200-300 words.
@@ -390,7 +412,6 @@ Write 200-300 words.
     return _call_claude(
         client,
         model="claude-haiku-4-5-20251001",
-        max_tokens=3000,
         messages=[{"role": "user", "content": f"""You are writing the final summary for Juz {juz_number} of the Quran's Tafsir Ibn Kathir, for a Muslim audience.
 
 Below are summaries of each section of the juz. Merge them into one cohesive summary that:
@@ -414,7 +435,6 @@ def _summarise_single(client, plain_text: str, juz_number: int) -> str:
     return _call_claude(
         client,
         model="claude-haiku-4-5-20251001",
-        max_tokens=2048,
         messages=[{"role": "user", "content": f"""You are summarising Juz {juz_number} of the Quran's Tafsir Ibn Kathir for a Muslim audience.
 
 Write a detailed overview summary that:
