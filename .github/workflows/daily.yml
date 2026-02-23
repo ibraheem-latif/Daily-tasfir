@@ -1,0 +1,44 @@
+name: Daily Tafsir
+
+on:
+  schedule:
+    # Runs at 5:00 AM UTC every day (adjust to your timezone)
+    - cron: '0 5 * * *'
+  workflow_dispatch:
+    # Manual trigger — lets you run it on demand or test
+    inputs:
+      juz_number:
+        description: 'Override juz number (1-30). Leave empty for auto.'
+        required: false
+
+permissions:
+  contents: write
+  pages: write
+  id-token: write
+
+jobs:
+  generate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: Install dependencies
+        run: pip install requests anthropic
+
+      - name: Generate today's tafsir
+        env:
+          ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
+          JUZ_NUMBER: ${{ github.event.inputs.juz_number }}
+        run: python generate.py
+
+      - name: Deploy to GitHub Pages
+        uses: peaceiris/actions-gh-pages@v4
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: ./site
+          keep_files: true  # preserves previous juz pages

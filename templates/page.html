@@ -1,0 +1,285 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Juz {{JUZ_NUMBER}} — Daily Tafsir</title>
+
+    <!-- Social sharing (WhatsApp preview) -->
+    <meta property="og:title" content="Juz {{JUZ_NUMBER}} ({{JUZ_NAME}}) — Daily Tafsir Ibn Kathir">
+    <meta property="og:description" content="Today's tafsir summary and full commentary for Juz {{JUZ_NUMBER}} of the Quran.">
+    <meta property="og:type" content="article">
+
+    <style>
+        :root {
+            --bg: #fafaf7;
+            --surface: #ffffff;
+            --text: #1a1a1a;
+            --text-secondary: #555;
+            --accent: #1b6b4a;
+            --accent-light: #e8f5ee;
+            --border: #e5e5e0;
+            --gold: #c9a84c;
+        }
+
+        @media (prefers-color-scheme: dark) {
+            :root {
+                --bg: #111110;
+                --surface: #1c1c1a;
+                --text: #e8e8e3;
+                --text-secondary: #999;
+                --accent: #3da874;
+                --accent-light: #1a2e23;
+                --border: #2a2a28;
+                --gold: #d4b456;
+            }
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif;
+            background: var(--bg);
+            color: var(--text);
+            line-height: 1.7;
+            -webkit-font-smoothing: antialiased;
+        }
+
+        .container {
+            max-width: 720px;
+            margin: 0 auto;
+            padding: 2rem 1.25rem 4rem;
+        }
+
+        /* Header */
+        header {
+            text-align: center;
+            padding: 2rem 0 1.5rem;
+            border-bottom: 1px solid var(--border);
+            margin-bottom: 2rem;
+        }
+
+        .juz-label {
+            font-size: 0.8rem;
+            text-transform: uppercase;
+            letter-spacing: 0.12em;
+            color: var(--accent);
+            font-weight: 600;
+        }
+
+        h1 {
+            font-size: 2rem;
+            font-weight: 700;
+            margin: 0.25rem 0;
+            letter-spacing: -0.02em;
+        }
+
+        .juz-name {
+            color: var(--text-secondary);
+            font-size: 1.1rem;
+            font-style: italic;
+        }
+
+        .meta {
+            margin-top: 0.75rem;
+            font-size: 0.85rem;
+            color: var(--text-secondary);
+        }
+
+        /* Summary card */
+        .summary-card {
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 1.75rem;
+            margin-bottom: 2rem;
+        }
+
+        .summary-card h2 {
+            font-size: 1rem;
+            text-transform: uppercase;
+            letter-spacing: 0.08em;
+            color: var(--accent);
+            margin-bottom: 1rem;
+            font-weight: 600;
+        }
+
+        .summary-text {
+            font-size: 1.05rem;
+            white-space: pre-line;
+        }
+
+        /* Share button */
+        .share-row {
+            display: flex;
+            gap: 0.75rem;
+            margin-top: 1.25rem;
+            flex-wrap: wrap;
+        }
+
+        .share-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.4rem;
+            padding: 0.5rem 1rem;
+            border-radius: 8px;
+            font-size: 0.85rem;
+            font-weight: 500;
+            text-decoration: none;
+            border: 1px solid var(--border);
+            color: var(--text);
+            background: var(--surface);
+            cursor: pointer;
+            transition: background 0.15s;
+        }
+
+        .share-btn:hover { background: var(--accent-light); }
+
+        .share-btn.whatsapp { border-color: #25d366; color: #25d366; }
+        .share-btn.copy { border-color: var(--accent); color: var(--accent); }
+
+        /* Full tafsir */
+        .full-tafsir {
+            margin-top: 2rem;
+        }
+
+        .full-tafsir-toggle {
+            width: 100%;
+            padding: 1rem;
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            font-size: 1rem;
+            font-weight: 600;
+            color: var(--accent);
+            cursor: pointer;
+            transition: background 0.15s;
+        }
+
+        .full-tafsir-toggle:hover { background: var(--accent-light); }
+
+        .full-tafsir-content {
+            display: none;
+            margin-top: 1rem;
+        }
+
+        .full-tafsir-content.open { display: block; }
+
+        .verse-tafsir {
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: 10px;
+            padding: 1.5rem;
+            margin-bottom: 1rem;
+        }
+
+        .verse-key {
+            font-size: 0.85rem;
+            color: var(--accent);
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+            font-family: monospace;
+        }
+
+        .verse-text {
+            font-size: 0.95rem;
+            line-height: 1.8;
+        }
+
+        .verse-text p { margin-bottom: 0.75rem; }
+
+        /* Archive link */
+        .archive-nav {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 3rem;
+            padding-top: 1.5rem;
+            border-top: 1px solid var(--border);
+            font-size: 0.85rem;
+        }
+
+        .archive-nav a {
+            color: var(--accent);
+            text-decoration: none;
+        }
+
+        .archive-nav a:hover { text-decoration: underline; }
+
+        /* Footer */
+        footer {
+            text-align: center;
+            margin-top: 3rem;
+            padding-top: 1.5rem;
+            border-top: 1px solid var(--border);
+            font-size: 0.8rem;
+            color: var(--text-secondary);
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <div class="juz-label">Daily Tafsir Ibn Kathir</div>
+            <h1>Juz {{JUZ_NUMBER}}</h1>
+            <div class="juz-name">{{JUZ_NAME}}</div>
+            <div class="meta">{{DATE}} &middot; {{WORD_COUNT}} words of commentary</div>
+        </header>
+
+        <div class="summary-card">
+            <h2>Today's Summary</h2>
+            <div class="summary-text">{{SUMMARY}}</div>
+
+            <div class="share-row">
+                <a class="share-btn whatsapp" id="wa-share" href="#" target="_blank" rel="noopener">
+                    Share on WhatsApp
+                </a>
+                <button class="share-btn copy" onclick="copyLink()">
+                    Copy link
+                </button>
+            </div>
+        </div>
+
+        <div class="full-tafsir">
+            <button class="full-tafsir-toggle" onclick="toggleTafsir()">
+                Read Full Tafsir ▾
+            </button>
+            <div class="full-tafsir-content" id="tafsir-body">
+                {{FULL_TAFSIR}}
+            </div>
+        </div>
+
+        <nav class="archive-nav">
+            <a href="juz-{{JUZ_NUMBER}}.html">Permalink for this juz</a>
+        </nav>
+
+        <footer>
+            Tafsir source: Quran.com API (Ibn Kathir, abridged) &middot; Summary by Claude
+        </footer>
+    </div>
+
+    <script>
+        // WhatsApp share link
+        const title = `Juz {{JUZ_NUMBER}} ({{JUZ_NAME}}) — Daily Tafsir Summary`;
+        const url = window.location.href;
+        const waText = encodeURIComponent(`${title}\n\n${url}`);
+        document.getElementById('wa-share').href = `https://wa.me/?text=${waText}`;
+
+        function toggleTafsir() {
+            const body = document.getElementById('tafsir-body');
+            const btn = document.querySelector('.full-tafsir-toggle');
+            body.classList.toggle('open');
+            btn.textContent = body.classList.contains('open')
+                ? 'Hide Full Tafsir ▴'
+                : 'Read Full Tafsir ▾';
+        }
+
+        function copyLink() {
+            navigator.clipboard.writeText(window.location.href).then(() => {
+                const btn = document.querySelector('.share-btn.copy');
+                btn.textContent = 'Copied!';
+                setTimeout(() => btn.textContent = 'Copy link', 2000);
+            });
+        }
+    </script>
+</body>
+</html>
