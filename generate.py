@@ -146,11 +146,92 @@ def build_plain_text(tafsirs: list[dict]) -> str:
     return "\n\n".join(parts)
 
 
-def summarise(plain_text: str, juz_number: int) -> str:
-    """Send the tafsir text to Claude Haiku for summarisation."""
-    client = anthropic.Anthropic()  # uses ANTHROPIC_API_KEY env var
+def chunk_text(plain_text: str, max_chars: int = 120_000) -> list[str]:
+    """Split tafsir text into chunks that fit within model context.
 
-    prompt = f"""You are summarising Juz {juz_number} of the Quran's Tafsir Ibn Kathir for a Muslim audience.
+    Splits on verse boundaries (double newlines) to keep entries intact.
+    """
+    if len(plain_text) <= max_chars:
+        return [plain_text]
+
+    chunks = []
+    entries = plain_text.split("\n\n")
+    current = []
+    current_len = 0
+
+    for entry in entries:
+        entry_len = len(entry) + 2  # +2 for the \n\n separator
+        if current_len + entry_len > max_chars and current:
+            chunks.append("\n\n".join(current))
+            current = []
+            current_len = 0
+        current.append(entry)
+        current_len += entry_len
+
+    if current:
+        chunks.append("\n\n".join(current))
+
+    return chunks
+
+
+def summarise(plain_text: str, juz_number: int) -> str:
+    """Chunk the tafsir, summarise each chunk, then merge into a final summary."""
+    client = anthropic.Anthropic()
+    chunks = chunk_text(plain_text)
+
+    if len(chunks) == 1:
+        # Fits in one call
+        return _summarise_single(client, plain_text, juz_number)
+
+    # Phase 1: summarise each chunk
+    print(f"  Text split into {len(chunks)} chunks for summarisation")
+    chunk_summaries = []
+    for i, chunk in enumerate(chunks, 1):
+        print(f"  Summarising chunk {i}/{len(chunks)}...")
+        message = client.messages.create(
+            model="claude-haiku-4-5-20251001",
+            max_tokens=1024,
+            messages=[{"role": "user", "content": f"""Summarise this section of Tafsir Ibn Kathir from Juz {juz_number}.
+Cover the key themes, stories, rulings, and lessons. Be thorough — this will be merged with other section summaries.
+Write 200-300 words.
+
+{chunk}"""}],
+        )
+        chunk_summaries.append(message.content[0].text)
+
+    # Phase 2: merge into final summary
+    print("  Merging chunk summaries into final summary...")
+    merged_input = "\n\n---\n\n".join(
+        f"Section {i}:\n{s}" for i, s in enumerate(chunk_summaries, 1)
+    )
+
+    message = client.messages.create(
+        model="claude-haiku-4-5-20251001",
+        max_tokens=1500,
+        messages=[{"role": "user", "content": f"""You are writing the final summary for Juz {juz_number} of the Quran's Tafsir Ibn Kathir, for a Muslim audience.
+
+Below are summaries of each section of the juz. Merge them into one cohesive summary that:
+- Opens with which surahs/verses this juz covers
+- Highlights the major themes, stories, and lessons
+- Notes any key rulings or guidance mentioned
+- Closes with the overarching message of the juz
+- Is written in clear, accessible English
+- Is around 500-700 words
+- Flows naturally as one piece (not a list of sections)
+
+Section summaries:
+
+{merged_input}"""}],
+    )
+    return message.content[0].text
+
+
+def _summarise_single(client, plain_text: str, juz_number: int) -> str:
+    """Summarise when the full text fits in one call."""
+    message = client.messages.create(
+        model="claude-haiku-4-5-20251001",
+        max_tokens=1024,
+        messages=[{"role": "user", "content": f"""You are summarising Juz {juz_number} of the Quran's Tafsir Ibn Kathir for a Muslim audience.
 
 Write a detailed overview summary that:
 - Opens with which surahs/verses this juz covers
@@ -162,12 +243,7 @@ Write a detailed overview summary that:
 
 Here is the full tafsir text:
 
-{plain_text}"""
-
-    message = client.messages.create(
-        model="claude-haiku-4-5-20251001",
-        max_tokens=1024,
-        messages=[{"role": "user", "content": prompt}],
+{plain_text}"""}],
     )
     return message.content[0].text
 
