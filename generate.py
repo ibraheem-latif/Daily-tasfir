@@ -336,16 +336,20 @@ def chunk_text(plain_text: str, max_chars: int = 120_000) -> list[str]:
 def _call_claude(client, **kwargs) -> str:
     """Call Claude with retry on transient server errors (500, 529)."""
     import anthropic
-    retryable = (anthropic.InternalServerError, anthropic._exceptions.OverloadedError)
-    for attempt in range(5):
+    retryable = (
+        anthropic.InternalServerError,
+        anthropic._exceptions.OverloadedError,
+        anthropic.RateLimitError,
+    )
+    for attempt in range(8):
         try:
             message = client.messages.create(**kwargs)
             return message.content[0].text
         except retryable as e:
-            wait = 2 ** attempt * 5  # 5, 10, 20, 40, 80 seconds
-            print(f"  API error ({e.__class__.__name__}), retrying in {wait}s (attempt {attempt + 1}/5)...")
+            wait = min(2 ** attempt * 10, 120)  # 10, 20, 40, 80, 120, 120...
+            print(f"    {e.__class__.__name__}, retrying in {wait}s (attempt {attempt + 1}/8)...")
             time.sleep(wait)
-    raise RuntimeError("Anthropic API failed after 5 retries")
+    raise RuntimeError("Anthropic API failed after 8 retries")
 
 
 def summarise(plain_text: str, juz_number: int) -> str:
@@ -361,6 +365,9 @@ def summarise(plain_text: str, juz_number: int) -> str:
     print(f"  Text split into {len(chunks)} chunks for summarisation")
     chunk_summaries = []
     for i, chunk in enumerate(chunks, 1):
+        if i > 1:
+            print("    Waiting 65s for rate limit...")
+            time.sleep(65)
         print(f"  Summarising chunk {i}/{len(chunks)}...")
         result = _call_claude(
             client,
