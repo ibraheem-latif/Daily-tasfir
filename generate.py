@@ -22,6 +22,9 @@ from pathlib import Path
 # UK timezone (GMT+0, no DST during Ramadan Feb-Mar)
 UK_TZ = timezone(timedelta(hours=0))
 
+# Token usage accumulator
+token_usage = {"input_tokens": 0, "output_tokens": 0, "api_calls": 0}
+
 # --- Config ---
 TAFSIR_RESOURCE_ID = 169  # Ibn Kathir (English, abridged)
 QURAN_API_BASE = "https://api.quran.com/api/v4"
@@ -357,6 +360,9 @@ def _call_claude(client, **kwargs) -> str:
 
     message = _call_claude_once(client, retryable, **kwargs)
     full_text = message.content[0].text
+    token_usage["input_tokens"] += message.usage.input_tokens
+    token_usage["output_tokens"] += message.usage.output_tokens
+    token_usage["api_calls"] += 1
 
     # If truncated, continue generating up to 5 times
     continuations = 0
@@ -371,6 +377,9 @@ def _call_claude(client, **kwargs) -> str:
         cont_kwargs = {**kwargs, "messages": messages}
         message = _call_claude_once(client, retryable, **cont_kwargs)
         full_text += message.content[0].text
+        token_usage["input_tokens"] += message.usage.input_tokens
+        token_usage["output_tokens"] += message.usage.output_tokens
+        token_usage["api_calls"] += 1
 
     return full_text
 
@@ -637,6 +646,13 @@ def main():
     # Generate index/archive page
     index_html = build_index(manifest)
     (OUTPUT_DIR / "index.html").write_text(index_html)
+
+    # Print token usage summary
+    if token_usage["api_calls"] > 0:
+        total = token_usage["input_tokens"] + token_usage["output_tokens"]
+        print(f"  Token usage: {token_usage['input_tokens']:,} input + "
+              f"{token_usage['output_tokens']:,} output = {total:,} total "
+              f"({token_usage['api_calls']} API calls)")
 
     print(f"Done! Output: site/juz-{juz_number}.html + site/index.html")
 
