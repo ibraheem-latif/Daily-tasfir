@@ -261,6 +261,107 @@
 
         .share-btn.whatsapp:hover { border-color: #25d366; color: #25d366; }
 
+        /* ══════ Top navigation ══════ */
+        .top-nav {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 1rem 0 0;
+        }
+
+        .top-nav a {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.4rem;
+            font-size: 0.8rem;
+            font-weight: 600;
+            color: var(--text-secondary);
+            text-decoration: none;
+            letter-spacing: 0.02em;
+            transition: color 0.15s;
+        }
+
+        .top-nav a:hover {
+            color: var(--gold);
+        }
+
+        /* ══════ Audio player bar ══════ */
+        .audio-player {
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: 2px;
+            padding: 0.9rem 1.25rem;
+            display: flex;
+            align-items: center;
+            gap: 0.9rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .audio-play-btn {
+            width: 42px;
+            height: 42px;
+            border-radius: 50%;
+            background: var(--gold);
+            color: var(--surface);
+            border: none;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1rem;
+            flex-shrink: 0;
+            transition: all 0.2s;
+        }
+
+        .audio-play-btn:hover {
+            background: var(--gold-light);
+            transform: scale(1.05);
+        }
+
+        .audio-info {
+            flex: 1;
+            min-width: 0;
+        }
+
+        .audio-label {
+            font-size: 0.65rem;
+            text-transform: uppercase;
+            letter-spacing: 0.15em;
+            color: var(--text-secondary);
+            font-weight: 600;
+        }
+
+        .audio-progress-row {
+            display: flex;
+            align-items: center;
+            gap: 0.6rem;
+            margin-top: 0.35rem;
+        }
+
+        .audio-progress-bar {
+            flex: 1;
+            height: 4px;
+            background: var(--border);
+            border-radius: 2px;
+            overflow: hidden;
+            cursor: pointer;
+        }
+
+        .audio-progress-fill {
+            height: 100%;
+            width: 0%;
+            background: var(--gold);
+            border-radius: 2px;
+            transition: width 0.1s linear;
+        }
+
+        .audio-time {
+            font-size: 0.7rem;
+            color: var(--text-secondary);
+            font-variant-numeric: tabular-nums;
+            white-space: nowrap;
+        }
+
         /* ══════ Full tafsir ══════ */
         .full-tafsir {
             margin-top: 0;
@@ -476,25 +577,6 @@
             color: var(--surface);
         }
 
-        /* ══════ Navigation ══════ */
-        .archive-nav {
-            display: flex;
-            justify-content: space-between;
-            margin-top: 3rem;
-            padding-top: 1.5rem;
-            border-top: 1px solid var(--border);
-            font-size: 0.85rem;
-        }
-
-        .archive-nav a {
-            color: var(--accent);
-            text-decoration: none;
-            font-weight: 600;
-            letter-spacing: 0.02em;
-        }
-
-        .archive-nav a:hover { text-decoration: underline; }
-
         /* ══════ Footer ══════ */
         footer {
             text-align: center;
@@ -518,6 +600,10 @@
 </head>
 <body>
     <div class="container">
+        <nav class="top-nav">
+            <a href="index.html">&larr; All Juz</a>
+        </nav>
+
         <header>
             <div class="bismillah">بِسْمِ ٱللَّهِ ٱلرَّحْمَـٰنِ ٱلرَّحِيمِ</div>
             <div class="juz-label">Daily Tafsir Ibn Kathir</div>
@@ -528,6 +614,8 @@
         </header>
 
         <div class="ornament-line"><span>&#10022;</span></div>
+
+        
 
         <div class="summary-card">
             <h2>Today's Summary</h2>
@@ -578,6 +666,165 @@
         </div>
 
         <div class="full-tafsir">
+            <button class="full-tafsir-toggle" onclick="toggleTafsir()">
+                Read Full Tafsir &#9662;
+            </button>
+            <div class="full-tafsir-content" id="tafsir-body">
+                <div class="verse-jumpbar">
+                    <div class="verse-jumpbar-label">Jump to verse</div>
+                    <div class="verse-jumpbar-links" id="jumpbar-links">
+                        <a href="#v-5-82">5:82</a>
+<a href="#v-5-83">5:83</a>
+<a href="#v-5-84">5:84</a>
+<a href="#v-5-85">5:85</a>
+<a href="#v-5-86">5:86</a>
+<a href="#v-5-87">5:87</a>
+<a href="#v-5-88">5:88</a>
+<a href="#v-5-89">5:89</a>
+<a href="#v-5-90">5:90</a>
+<a href="#v-5-91">5:91</a>
+<a href="#v-5-92">5:92</a>
+<a href="#v-5-93">5:93</a>
+<a href="#v-5-94">5:94</a>
+<a href="#v-5-95">5:95</a>
+<a href="#v-5-96">5:96</a>
+<a href="#v-5-97">5:97</a>
+<a href="#v-5-98">5:98</a>
+<a href="#v-5-99">5:99</a>
+<a href="#v-5-100">5:100</a>
+<a href="#v-5-101">5:101</a>
+<a href="#v-5-102">5:102</a>
+<a href="#v-5-103">5:103</a>
+<a href="#v-5-104">5:104</a>
+<a href="#v-5-105">5:105</a>
+<a href="#v-5-106">5:106</a>
+<a href="#v-5-107">5:107</a>
+<a href="#v-5-108">5:108</a>
+<a href="#v-5-109">5:109</a>
+<a href="#v-5-110">5:110</a>
+<a href="#v-5-111">5:111</a>
+<a href="#v-5-112">5:112</a>
+<a href="#v-5-113">5:113</a>
+<a href="#v-5-114">5:114</a>
+<a href="#v-5-115">5:115</a>
+<a href="#v-5-116">5:116</a>
+<a href="#v-5-117">5:117</a>
+<a href="#v-5-118">5:118</a>
+<a href="#v-5-119">5:119</a>
+<a href="#v-5-120">5:120</a>
+<a href="#v-6-1">6:1</a>
+<a href="#v-6-2">6:2</a>
+<a href="#v-6-3">6:3</a>
+<a href="#v-6-4">6:4</a>
+<a href="#v-6-5">6:5</a>
+<a href="#v-6-6">6:6</a>
+<a href="#v-6-7">6:7</a>
+<a href="#v-6-8">6:8</a>
+<a href="#v-6-9">6:9</a>
+<a href="#v-6-10">6:10</a>
+<a href="#v-6-11">6:11</a>
+<a href="#v-6-12">6:12</a>
+<a href="#v-6-13">6:13</a>
+<a href="#v-6-14">6:14</a>
+<a href="#v-6-15">6:15</a>
+<a href="#v-6-16">6:16</a>
+<a href="#v-6-17">6:17</a>
+<a href="#v-6-18">6:18</a>
+<a href="#v-6-19">6:19</a>
+<a href="#v-6-20">6:20</a>
+<a href="#v-6-21">6:21</a>
+<a href="#v-6-22">6:22</a>
+<a href="#v-6-23">6:23</a>
+<a href="#v-6-24">6:24</a>
+<a href="#v-6-25">6:25</a>
+<a href="#v-6-26">6:26</a>
+<a href="#v-6-27">6:27</a>
+<a href="#v-6-28">6:28</a>
+<a href="#v-6-29">6:29</a>
+<a href="#v-6-30">6:30</a>
+<a href="#v-6-31">6:31</a>
+<a href="#v-6-32">6:32</a>
+<a href="#v-6-33">6:33</a>
+<a href="#v-6-34">6:34</a>
+<a href="#v-6-35">6:35</a>
+<a href="#v-6-36">6:36</a>
+<a href="#v-6-37">6:37</a>
+<a href="#v-6-38">6:38</a>
+<a href="#v-6-39">6:39</a>
+<a href="#v-6-40">6:40</a>
+<a href="#v-6-41">6:41</a>
+<a href="#v-6-42">6:42</a>
+<a href="#v-6-43">6:43</a>
+<a href="#v-6-44">6:44</a>
+<a href="#v-6-45">6:45</a>
+<a href="#v-6-46">6:46</a>
+<a href="#v-6-47">6:47</a>
+<a href="#v-6-48">6:48</a>
+<a href="#v-6-49">6:49</a>
+<a href="#v-6-50">6:50</a>
+<a href="#v-6-51">6:51</a>
+<a href="#v-6-52">6:52</a>
+<a href="#v-6-53">6:53</a>
+<a href="#v-6-54">6:54</a>
+<a href="#v-6-55">6:55</a>
+<a href="#v-6-56">6:56</a>
+<a href="#v-6-57">6:57</a>
+<a href="#v-6-58">6:58</a>
+<a href="#v-6-59">6:59</a>
+<a href="#v-6-60">6:60</a>
+<a href="#v-6-61">6:61</a>
+<a href="#v-6-62">6:62</a>
+<a href="#v-6-63">6:63</a>
+<a href="#v-6-64">6:64</a>
+<a href="#v-6-65">6:65</a>
+<a href="#v-6-66">6:66</a>
+<a href="#v-6-67">6:67</a>
+<a href="#v-6-68">6:68</a>
+<a href="#v-6-69">6:69</a>
+<a href="#v-6-70">6:70</a>
+<a href="#v-6-71">6:71</a>
+<a href="#v-6-72">6:72</a>
+<a href="#v-6-73">6:73</a>
+<a href="#v-6-74">6:74</a>
+<a href="#v-6-75">6:75</a>
+<a href="#v-6-76">6:76</a>
+<a href="#v-6-77">6:77</a>
+<a href="#v-6-78">6:78</a>
+<a href="#v-6-79">6:79</a>
+<a href="#v-6-80">6:80</a>
+<a href="#v-6-81">6:81</a>
+<a href="#v-6-82">6:82</a>
+<a href="#v-6-83">6:83</a>
+<a href="#v-6-84">6:84</a>
+<a href="#v-6-85">6:85</a>
+<a href="#v-6-86">6:86</a>
+<a href="#v-6-87">6:87</a>
+<a href="#v-6-88">6:88</a>
+<a href="#v-6-89">6:89</a>
+<a href="#v-6-90">6:90</a>
+<a href="#v-6-91">6:91</a>
+<a href="#v-6-92">6:92</a>
+<a href="#v-6-93">6:93</a>
+<a href="#v-6-94">6:94</a>
+<a href="#v-6-95">6:95</a>
+<a href="#v-6-96">6:96</a>
+<a href="#v-6-97">6:97</a>
+<a href="#v-6-98">6:98</a>
+<a href="#v-6-99">6:99</a>
+<a href="#v-6-100">6:100</a>
+<a href="#v-6-101">6:101</a>
+<a href="#v-6-102">6:102</a>
+<a href="#v-6-103">6:103</a>
+<a href="#v-6-104">6:104</a>
+<a href="#v-6-105">6:105</a>
+<a href="#v-6-106">6:106</a>
+<a href="#v-6-107">6:107</a>
+<a href="#v-6-108">6:108</a>
+<a href="#v-6-109">6:109</a>
+<a href="#v-6-110">6:110</a>
+                    </div>
+                </div>
+                <div class="full-tafsir">
             <button class="full-tafsir-toggle" onclick="toggleTafsir()">
                 Read Full Tafsir &#9662;
             </button>
@@ -890,11 +1137,6 @@
 
         <button class="back-to-top" id="back-to-top" onclick="window.scrollTo({top:0,behavior:'smooth'})">&#9650;</button>
 
-        <nav class="archive-nav">
-            <a href="index.html">&larr; All Juz</a>
-            <a href="juz-7.html">Permalink</a>
-        </nav>
-
         <footer>
             Tafsir source: Quran.com API (Ibn Kathir, abridged) &middot; Summary by Claude
         </footer>
@@ -954,6 +1196,51 @@
                 btn.textContent = 'Copied!';
                 setTimeout(() => btn.textContent = 'Copy link', 2000);
             });
+        }
+
+        // ── Audio Player ──
+        const audio = document.getElementById('tts-audio');
+        const playBtn = document.getElementById('audio-play-btn');
+        const progressFill = document.getElementById('audio-progress-fill');
+        const progressBar = document.getElementById('audio-progress-bar');
+        const timeDisplay = document.getElementById('audio-time');
+
+        function fmtTime(s) {
+            const m = Math.floor(s / 60);
+            const sec = Math.floor(s % 60);
+            return m + ':' + (sec < 10 ? '0' : '') + sec;
+        }
+
+        function toggleAudio() {
+            if (!audio) return;
+            if (audio.paused) {
+                audio.play();
+                playBtn.innerHTML = '&#9724;';
+            } else {
+                audio.pause();
+                playBtn.innerHTML = '&#9654;';
+            }
+        }
+
+        if (audio) {
+            audio.addEventListener('timeupdate', () => {
+                if (audio.duration) {
+                    const pct = (audio.currentTime / audio.duration) * 100;
+                    progressFill.style.width = pct + '%';
+                    timeDisplay.textContent = fmtTime(audio.currentTime) + ' / ' + fmtTime(audio.duration);
+                }
+            });
+            audio.addEventListener('ended', () => {
+                playBtn.innerHTML = '&#9654;';
+                progressFill.style.width = '0%';
+            });
+            if (progressBar) {
+                progressBar.addEventListener('click', (e) => {
+                    const rect = progressBar.getBoundingClientRect();
+                    const pct = (e.clientX - rect.left) / rect.width;
+                    audio.currentTime = pct * audio.duration;
+                });
+            }
         }
     </script>
 </body>

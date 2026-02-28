@@ -261,6 +261,107 @@
 
         .share-btn.whatsapp:hover { border-color: #25d366; color: #25d366; }
 
+        /* ══════ Top navigation ══════ */
+        .top-nav {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 1rem 0 0;
+        }
+
+        .top-nav a {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.4rem;
+            font-size: 0.8rem;
+            font-weight: 600;
+            color: var(--text-secondary);
+            text-decoration: none;
+            letter-spacing: 0.02em;
+            transition: color 0.15s;
+        }
+
+        .top-nav a:hover {
+            color: var(--gold);
+        }
+
+        /* ══════ Audio player bar ══════ */
+        .audio-player {
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: 2px;
+            padding: 0.9rem 1.25rem;
+            display: flex;
+            align-items: center;
+            gap: 0.9rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .audio-play-btn {
+            width: 42px;
+            height: 42px;
+            border-radius: 50%;
+            background: var(--gold);
+            color: var(--surface);
+            border: none;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1rem;
+            flex-shrink: 0;
+            transition: all 0.2s;
+        }
+
+        .audio-play-btn:hover {
+            background: var(--gold-light);
+            transform: scale(1.05);
+        }
+
+        .audio-info {
+            flex: 1;
+            min-width: 0;
+        }
+
+        .audio-label {
+            font-size: 0.65rem;
+            text-transform: uppercase;
+            letter-spacing: 0.15em;
+            color: var(--text-secondary);
+            font-weight: 600;
+        }
+
+        .audio-progress-row {
+            display: flex;
+            align-items: center;
+            gap: 0.6rem;
+            margin-top: 0.35rem;
+        }
+
+        .audio-progress-bar {
+            flex: 1;
+            height: 4px;
+            background: var(--border);
+            border-radius: 2px;
+            overflow: hidden;
+            cursor: pointer;
+        }
+
+        .audio-progress-fill {
+            height: 100%;
+            width: 0%;
+            background: var(--gold);
+            border-radius: 2px;
+            transition: width 0.1s linear;
+        }
+
+        .audio-time {
+            font-size: 0.7rem;
+            color: var(--text-secondary);
+            font-variant-numeric: tabular-nums;
+            white-space: nowrap;
+        }
+
         /* ══════ Full tafsir ══════ */
         .full-tafsir {
             margin-top: 0;
@@ -476,25 +577,6 @@
             color: var(--surface);
         }
 
-        /* ══════ Navigation ══════ */
-        .archive-nav {
-            display: flex;
-            justify-content: space-between;
-            margin-top: 3rem;
-            padding-top: 1.5rem;
-            border-top: 1px solid var(--border);
-            font-size: 0.85rem;
-        }
-
-        .archive-nav a {
-            color: var(--accent);
-            text-decoration: none;
-            font-weight: 600;
-            letter-spacing: 0.02em;
-        }
-
-        .archive-nav a:hover { text-decoration: underline; }
-
         /* ══════ Footer ══════ */
         footer {
             text-align: center;
@@ -518,6 +600,10 @@
 </head>
 <body>
     <div class="container">
+        <nav class="top-nav">
+            <a href="index.html">&larr; All Juz</a>
+        </nav>
+
         <header>
             <div class="bismillah">بِسْمِ ٱللَّهِ ٱلرَّحْمَـٰنِ ٱلرَّحِيمِ</div>
             <div class="juz-label">Daily Tafsir Ibn Kathir</div>
@@ -528,6 +614,8 @@
         </header>
 
         <div class="ornament-line"><span>&#10022;</span></div>
+
+        
 
         <div class="summary-card">
             <h2>Today's Summary</h2>
@@ -588,6 +676,140 @@
         </div>
 
         <div class="full-tafsir">
+            <button class="full-tafsir-toggle" onclick="toggleTafsir()">
+                Read Full Tafsir &#9662;
+            </button>
+            <div class="full-tafsir-content" id="tafsir-body">
+                <div class="verse-jumpbar">
+                    <div class="verse-jumpbar-label">Jump to verse</div>
+                    <div class="verse-jumpbar-links" id="jumpbar-links">
+                        <a href="#v-4-24">4:24</a>
+<a href="#v-4-25">4:25</a>
+<a href="#v-4-26">4:26</a>
+<a href="#v-4-27">4:27</a>
+<a href="#v-4-28">4:28</a>
+<a href="#v-4-29">4:29</a>
+<a href="#v-4-30">4:30</a>
+<a href="#v-4-31">4:31</a>
+<a href="#v-4-32">4:32</a>
+<a href="#v-4-33">4:33</a>
+<a href="#v-4-34">4:34</a>
+<a href="#v-4-35">4:35</a>
+<a href="#v-4-36">4:36</a>
+<a href="#v-4-37">4:37</a>
+<a href="#v-4-38">4:38</a>
+<a href="#v-4-39">4:39</a>
+<a href="#v-4-40">4:40</a>
+<a href="#v-4-41">4:41</a>
+<a href="#v-4-42">4:42</a>
+<a href="#v-4-43">4:43</a>
+<a href="#v-4-44">4:44</a>
+<a href="#v-4-45">4:45</a>
+<a href="#v-4-46">4:46</a>
+<a href="#v-4-47">4:47</a>
+<a href="#v-4-48">4:48</a>
+<a href="#v-4-49">4:49</a>
+<a href="#v-4-50">4:50</a>
+<a href="#v-4-51">4:51</a>
+<a href="#v-4-52">4:52</a>
+<a href="#v-4-53">4:53</a>
+<a href="#v-4-54">4:54</a>
+<a href="#v-4-55">4:55</a>
+<a href="#v-4-56">4:56</a>
+<a href="#v-4-57">4:57</a>
+<a href="#v-4-58">4:58</a>
+<a href="#v-4-59">4:59</a>
+<a href="#v-4-60">4:60</a>
+<a href="#v-4-61">4:61</a>
+<a href="#v-4-62">4:62</a>
+<a href="#v-4-63">4:63</a>
+<a href="#v-4-64">4:64</a>
+<a href="#v-4-65">4:65</a>
+<a href="#v-4-66">4:66</a>
+<a href="#v-4-67">4:67</a>
+<a href="#v-4-68">4:68</a>
+<a href="#v-4-69">4:69</a>
+<a href="#v-4-70">4:70</a>
+<a href="#v-4-71">4:71</a>
+<a href="#v-4-72">4:72</a>
+<a href="#v-4-73">4:73</a>
+<a href="#v-4-74">4:74</a>
+<a href="#v-4-75">4:75</a>
+<a href="#v-4-76">4:76</a>
+<a href="#v-4-77">4:77</a>
+<a href="#v-4-78">4:78</a>
+<a href="#v-4-79">4:79</a>
+<a href="#v-4-80">4:80</a>
+<a href="#v-4-81">4:81</a>
+<a href="#v-4-82">4:82</a>
+<a href="#v-4-83">4:83</a>
+<a href="#v-4-84">4:84</a>
+<a href="#v-4-85">4:85</a>
+<a href="#v-4-86">4:86</a>
+<a href="#v-4-87">4:87</a>
+<a href="#v-4-88">4:88</a>
+<a href="#v-4-89">4:89</a>
+<a href="#v-4-90">4:90</a>
+<a href="#v-4-91">4:91</a>
+<a href="#v-4-92">4:92</a>
+<a href="#v-4-93">4:93</a>
+<a href="#v-4-94">4:94</a>
+<a href="#v-4-95">4:95</a>
+<a href="#v-4-96">4:96</a>
+<a href="#v-4-97">4:97</a>
+<a href="#v-4-98">4:98</a>
+<a href="#v-4-99">4:99</a>
+<a href="#v-4-100">4:100</a>
+<a href="#v-4-101">4:101</a>
+<a href="#v-4-102">4:102</a>
+<a href="#v-4-103">4:103</a>
+<a href="#v-4-104">4:104</a>
+<a href="#v-4-105">4:105</a>
+<a href="#v-4-106">4:106</a>
+<a href="#v-4-107">4:107</a>
+<a href="#v-4-108">4:108</a>
+<a href="#v-4-109">4:109</a>
+<a href="#v-4-110">4:110</a>
+<a href="#v-4-111">4:111</a>
+<a href="#v-4-112">4:112</a>
+<a href="#v-4-113">4:113</a>
+<a href="#v-4-114">4:114</a>
+<a href="#v-4-115">4:115</a>
+<a href="#v-4-116">4:116</a>
+<a href="#v-4-117">4:117</a>
+<a href="#v-4-118">4:118</a>
+<a href="#v-4-119">4:119</a>
+<a href="#v-4-120">4:120</a>
+<a href="#v-4-121">4:121</a>
+<a href="#v-4-122">4:122</a>
+<a href="#v-4-123">4:123</a>
+<a href="#v-4-124">4:124</a>
+<a href="#v-4-125">4:125</a>
+<a href="#v-4-126">4:126</a>
+<a href="#v-4-127">4:127</a>
+<a href="#v-4-128">4:128</a>
+<a href="#v-4-129">4:129</a>
+<a href="#v-4-130">4:130</a>
+<a href="#v-4-131">4:131</a>
+<a href="#v-4-132">4:132</a>
+<a href="#v-4-133">4:133</a>
+<a href="#v-4-134">4:134</a>
+<a href="#v-4-135">4:135</a>
+<a href="#v-4-136">4:136</a>
+<a href="#v-4-137">4:137</a>
+<a href="#v-4-138">4:138</a>
+<a href="#v-4-139">4:139</a>
+<a href="#v-4-140">4:140</a>
+<a href="#v-4-141">4:141</a>
+<a href="#v-4-142">4:142</a>
+<a href="#v-4-143">4:143</a>
+<a href="#v-4-144">4:144</a>
+<a href="#v-4-145">4:145</a>
+<a href="#v-4-146">4:146</a>
+<a href="#v-4-147">4:147</a>
+                    </div>
+                </div>
+                <div class="full-tafsir">
             <button class="full-tafsir-toggle" onclick="toggleTafsir()">
                 Read Full Tafsir &#9662;
             </button>
@@ -850,11 +1072,6 @@
 
         <button class="back-to-top" id="back-to-top" onclick="window.scrollTo({top:0,behavior:'smooth'})">&#9650;</button>
 
-        <nav class="archive-nav">
-            <a href="index.html">&larr; All Juz</a>
-            <a href="juz-5.html">Permalink</a>
-        </nav>
-
         <footer>
             Tafsir source: Quran.com API (Ibn Kathir, abridged) &middot; Summary by Claude
         </footer>
@@ -914,6 +1131,51 @@
                 btn.textContent = 'Copied!';
                 setTimeout(() => btn.textContent = 'Copy link', 2000);
             });
+        }
+
+        // ── Audio Player ──
+        const audio = document.getElementById('tts-audio');
+        const playBtn = document.getElementById('audio-play-btn');
+        const progressFill = document.getElementById('audio-progress-fill');
+        const progressBar = document.getElementById('audio-progress-bar');
+        const timeDisplay = document.getElementById('audio-time');
+
+        function fmtTime(s) {
+            const m = Math.floor(s / 60);
+            const sec = Math.floor(s % 60);
+            return m + ':' + (sec < 10 ? '0' : '') + sec;
+        }
+
+        function toggleAudio() {
+            if (!audio) return;
+            if (audio.paused) {
+                audio.play();
+                playBtn.innerHTML = '&#9724;';
+            } else {
+                audio.pause();
+                playBtn.innerHTML = '&#9654;';
+            }
+        }
+
+        if (audio) {
+            audio.addEventListener('timeupdate', () => {
+                if (audio.duration) {
+                    const pct = (audio.currentTime / audio.duration) * 100;
+                    progressFill.style.width = pct + '%';
+                    timeDisplay.textContent = fmtTime(audio.currentTime) + ' / ' + fmtTime(audio.duration);
+                }
+            });
+            audio.addEventListener('ended', () => {
+                playBtn.innerHTML = '&#9654;';
+                progressFill.style.width = '0%';
+            });
+            if (progressBar) {
+                progressBar.addEventListener('click', (e) => {
+                    const rect = progressBar.getBoundingClientRect();
+                    const pct = (e.clientX - rect.left) / rect.width;
+                    audio.currentTime = pct * audio.duration;
+                });
+            }
         }
     </script>
 </body>
