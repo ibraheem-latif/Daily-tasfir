@@ -261,6 +261,12 @@
 
         .share-btn.whatsapp:hover { border-color: #25d366; color: #25d366; }
 
+        .share-btn.listen.active {
+            background: var(--gold-faint);
+            border-color: var(--gold);
+            color: var(--gold);
+        }
+
         /* ══════ Full tafsir ══════ */
         .full-tafsir {
             margin-top: 0;
@@ -540,8 +546,10 @@
                 <button class="share-btn copy" onclick="copyLink()">
                     Copy link
                 </button>
+                {{LISTEN_BUTTON}}
             </div>
 
+            {{AUDIO_ELEMENT}}
         </div>
 
         <div class="full-tafsir">
@@ -627,6 +635,29 @@
             });
         }
 
+        // ── Read Aloud (AI Audio) ──
+        const readBtn = document.getElementById('read-aloud-btn');
+        const audio = document.getElementById('tts-audio');
+
+        function toggleReadAloud() {
+            if (!audio) { alert('Audio not available.'); return; }
+            if (audio.paused) {
+                audio.play();
+                readBtn.classList.add('active');
+                readBtn.innerHTML = '&#9724; Pause';
+            } else {
+                audio.pause();
+                readBtn.classList.remove('active');
+                readBtn.innerHTML = '&#9654; Read aloud';
+            }
+        }
+
+        if (audio) {
+            audio.addEventListener('ended', () => {
+                readBtn.classList.remove('active');
+                readBtn.innerHTML = '&#9654; Read aloud';
+            });
+        }
     </script>
 </body>
 </html>

@@ -512,11 +512,30 @@ def build_html(juz_number: int, summary: str, tafsirs: list[dict], word_count: i
     available_verses = {t.get("verse_key", "") for t in tafsirs}
     summary_html = linkify_verses(summary_html, available_verses)
 
+    # Check if an MP3 audio file exists for this juz
+    mp3_name = f"juz-{juz_number}.mp3"
+    has_audio = (OUTPUT_DIR / mp3_name).exists()
+    if has_audio:
+        audio_html = (
+            f'<audio id="tts-audio" preload="none">'
+            f'<source src="{mp3_name}" type="audio/mpeg">'
+            f'</audio>'
+        )
+        listen_btn = (
+            '<button class="share-btn listen" id="read-aloud-btn" '
+            'onclick="toggleReadAloud()">&#9654; Read aloud</button>'
+        )
+    else:
+        audio_html = ""
+        listen_btn = ""
+
     output = template.replace("{{JUZ_NUMBER}}", str(juz_number))
     output = output.replace("{{JUZ_NAME_AR}}", juz_name_ar)
     output = output.replace("{{JUZ_NAME}}", html_mod.escape(juz_name))
     output = output.replace("{{DATE}}", today)
     output = output.replace("{{SUMMARY}}", summary_html)
+    output = output.replace("{{AUDIO_ELEMENT}}", audio_html)
+    output = output.replace("{{LISTEN_BUTTON}}", listen_btn)
     output = output.replace("{{VERSE_JUMPBAR}}", jumpbar_html)
     output = output.replace("{{FULL_TAFSIR}}", full_tafsir_html)
     output = output.replace("{{WORD_COUNT}}", f"{word_count:,}")
